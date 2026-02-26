@@ -1,0 +1,19 @@
+Icon Files Needed
+==================
+
+For a complete Chrome extension, you need icon files:
+
+icons/icon48.png  (48x48 pixels)
+icons/icon128.png (128x128 pixels)
+
+For MVP, you can:
+1. Create simple icons using any image editor
+2. Use online tools like favicon.io or canva.com
+3. Or temporarily comment out the "icons" section in manifest.json
+
+The extension will work without icons, but Chrome will show a default puzzle piece icon.
+
+Quick icon ideas:
+- Simple otter emoji screenshot
+- Colored circle with "🦦" text
+- Use https://favicon.io/emoji-favicons/otter/ 

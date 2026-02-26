@@ -1,0 +1,137 @@
+#otter-pet-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999999;
+  cursor: move;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#otter-pet {
+  width: 250px;
+  height: auto; /* maintain aspect ratio */
+  max-height: 250px;
+  display: block;
+  pointer-events: none;
+  object-fit: contain; /* prevent distortion */
+}
+
+/* Pet wrapper - contains image and resize handle */
+#otter-pet-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Timer row - centred above otter */
+#otter-timer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+/* Shared style for timer + buttons */
+#otter-timer,
+#otter-btn-start,
+#otter-btn-pause {
+  background: white;
+  color: black;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  border-radius: 20px;
+  padding: 4px 10px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+#otter-btn-start,
+#otter-btn-pause {
+  font-size: 14px;
+  padding: 4px 10px;
+}
+
+#otter-timer {
+  min-width: 64px;
+  text-align: center;
+  cursor: text;
+}
+
+#otter-timer:hover    { outline: 2px solid #333; }
+#otter-btn-start:hover,
+#otter-btn-pause:hover { background: #f0f0f0; }
+
+/* Close button - slightly different style */
+#otter-btn-close {
+  background: white;
+  color: #cc0000;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  border-radius: 20px;
+  padding: 4px 10px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#otter-btn-close:hover { background: #ffe0e0; }
+
+/* Resize handle - BOTTOM RIGHT of otter image */
+#otter-resize-handle {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: se-resize;
+  pointer-events: auto;
+  z-index: 1000000;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+#otter-resize-handle:hover {
+  background: #f0f0f0;
+  transform: scale(1.2);
+}
+
+/* Floating bubbles */
+.otter-bubble {
+  position: absolute;
+  font-size: 35px; /* bigger bubbles */
+  pointer-events: none;
+  opacity: 0.8;
+  animation: float-bubble 10s ease-in-out infinite; /* much slower */
+  z-index: 999998;
+}
+
+@keyframes float-bubble {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(10px, -15px) scale(1.1);
+  }
+  50% {
+    transform: translate(-5px, -25px) scale(0.9);
+  }
+  75% {
+    transform: translate(-15px, -10px) scale(1.05);
+  }
+}
