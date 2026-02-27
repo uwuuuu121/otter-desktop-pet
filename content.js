@@ -34,6 +34,7 @@ function createPet() {
   chrome.storage.local.get(['otterExists'], (result) => {
     if (result.otterExists) {
       console.log('Otter already exists in another tab');
+      showSummonButton(); // Show button if otter exists elsewhere
       return;
     }
     
@@ -41,6 +42,7 @@ function createPet() {
     
     // Mark that otter exists
     chrome.storage.local.set({ otterExists: true });
+    hideSummonButton(); // Remove summon button if it exists
 
     const container = document.createElement('div');
     container.id = 'otter-pet-container';
@@ -168,6 +170,31 @@ function removePet() {
   chrome.storage.local.remove(['otterState', 'otterExists']);
   const container = document.getElementById('otter-pet-container');
   if (container) container.remove();
+  
+  // Show summon button after removal
+  showSummonButton();
+}
+
+// ── Summon Button ──────────────────────────────
+function showSummonButton() {
+  // Don't create if already exists
+  if (document.getElementById('otter-summon-btn')) return;
+  
+  const btn = document.createElement('button');
+  btn.id = 'otter-summon-btn';
+  btn.textContent = '🦦';
+  btn.title = '召喚水獺';
+  btn.addEventListener('click', () => {
+    btn.remove();
+    createPet();
+  });
+  
+  document.body.appendChild(btn);
+}
+
+function hideSummonButton() {
+  const btn = document.getElementById('otter-summon-btn');
+  if (btn) btn.remove();
 }
 
 // ── Timer controls ─────────────────────────────
