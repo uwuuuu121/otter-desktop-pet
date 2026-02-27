@@ -110,37 +110,7 @@ function createPet() {
 
 
 
-function updateBubblePositions() {
-  const container = document.getElementById('otter-pet-container');
-  if (!container || bubbles.length === 0) return;
-  
-  const rect = container.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  
-  bubbles.forEach((bubble, i) => {
-    // i=0 is left, i=1 is right
-    const isLeft = i === 0;
-    const baseAngle = isLeft ? Math.PI : 0; // left = 180°, right = 0°
-    
-    // Very slow oscillation: divide by 8000
-    const wiggle = Math.sin(Date.now() / 8000 + i) * 0.3; // small angle wiggle
-    const angle = baseAngle + wiggle;
-    
-    const distance = 100; // slightly further out
-    
-    const x = centerX + Math.cos(angle) * distance;
-    const y = centerY + Math.sin(angle) * distance * 0.3; // less vertical movement
-    
-    bubble.style.left = x + 'px';
-    bubble.style.top  = y + 'px';
-  });
-}
 
-function removeBubbles() {
-  bubbles.forEach(b => b.remove());
-  bubbles = [];
-}
 
 // ── Close button logic ─────────────────────────
 function handleClose() {
@@ -179,34 +149,38 @@ function removePet() {
 function showSummonButton() {
   // Don't create if already exists
   if (document.getElementById('otter-summon-btn')) return;
-  
+
+  // Invisible hover zone in bottom-right corner
+  const zone = document.createElement('div');
+  zone.id = 'otter-summon-zone';
+  document.body.appendChild(zone);
+
   const btn = document.createElement('button');
   btn.id = 'otter-summon-btn';
   btn.title = '召喚水獺';
 
-  // Use current stage image
+  // Use custom summon icon
   const img = document.createElement('img');
   img.id = 'otter-summon-img';
-  const imgSrc = currentMode === 'sleep'    ? stages.sleep    :
-                 currentMode === 'gangster' ? stages.gangster :
-                 stages[currentStage];
-  img.src = chrome.runtime.getURL(imgSrc);
+  img.src = chrome.runtime.getURL('images/summon_icon.png');
   btn.appendChild(img);
 
   btn.addEventListener('click', () => {
+    zone.remove();
     btn.remove();
-    // Reset otterExists so createPet() won't block
     chrome.storage.local.remove(['otterExists'], () => {
       createPet();
     });
   });
-  
+
   document.body.appendChild(btn);
 }
 
 function hideSummonButton() {
   const btn = document.getElementById('otter-summon-btn');
   if (btn) btn.remove();
+  const zone = document.getElementById('otter-summon-zone');
+  if (zone) zone.remove();
 }
 
 // ── Timer controls ─────────────────────────────
@@ -363,15 +337,18 @@ function makeDraggable(container, ...excludedElements) {
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     
-    // Center container on mouse position
     const rect = container.getBoundingClientRect();
-    const newLeft = e.clientX - rect.width / 2;
-    const newTop  = e.clientY - rect.height / 2;
-    
+    let newLeft = e.clientX - rect.width / 2;
+    let newTop  = e.clientY - rect.height / 2;
+
+    // Clamp within viewport
+    const maxLeft = window.innerWidth  - rect.width;
+    const maxTop  = window.innerHeight - rect.height;
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop  = Math.max(0, Math.min(newTop,  maxTop));
+
     container.style.left = newLeft + 'px';
-    container.style.top  = newTop + 'px';
-    
-    updateBubblePositions();
+    container.style.top  = newTop  + 'px';
   });
 
   document.addEventListener('mouseup', () => {
