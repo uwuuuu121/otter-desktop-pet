@@ -115,33 +115,53 @@ function createPet() {
 // ── Close button logic ─────────────────────────
 function handleClose() {
   if (currentMode === 'sleep') {
-    // Sleep mode: close immediately
-    removePet();
+    hideOtter();
     return;
   }
 
   if (currentMode === 'gangster') {
-    // Gangster mode: close immediately
-    removePet();
+    hideOtter();
     return;
   }
 
-  // Focus mode: first ✕ = gangster, second ✕ = close
+  // Focus mode: first ✕ = gangster, second ✕ = hide
   closeClickCount++;
   if (closeClickCount === 1) {
     activateGangster();
   } else {
-    removePet();
+    hideOtter();
+    closeClickCount = 0;
+  }
+}
+
+function hideOtter() {
+  pauseTimer();
+  const container = document.getElementById('otter-pet-container');
+  if (container) container.style.display = 'none';
+  chrome.storage.local.set({ otterHidden: true });
+  showSummonButton();
+}
+
+function showOtter() {
+  const container = document.getElementById('otter-pet-container');
+  if (container) {
+    container.style.display = 'flex';
+    chrome.storage.local.remove(['otterHidden']);
+    hideSummonButton();
+    startTimer();
+  } else {
+    // Container doesn't exist yet (e.g. fresh page load), create it
+    chrome.storage.local.remove(['otterExists', 'otterHidden'], () => {
+      createPet();
+    });
   }
 }
 
 function removePet() {
   pauseTimer();
-  chrome.storage.local.remove(['otterState', 'otterExists']);
+  chrome.storage.local.remove(['otterState', 'otterExists', 'otterHidden']);
   const container = document.getElementById('otter-pet-container');
   if (container) container.remove();
-  
-  // Show summon button after removal
   showSummonButton();
 }
 
@@ -168,9 +188,7 @@ function showSummonButton() {
   btn.addEventListener('click', () => {
     zone.remove();
     btn.remove();
-    chrome.storage.local.remove(['otterExists'], () => {
-      createPet();
-    });
+    showOtter();
   });
 
   document.body.appendChild(btn);
@@ -408,7 +426,14 @@ function saveState() {
 }
 
 function loadState() {
-  chrome.storage.local.get(['otterState'], (result) => {
+  chrome.storage.local.get(['otterState', 'otterHidden'], (result) => {
+    if (result.otterHidden) {
+      // Was hidden before page reload - keep hidden, show summon button
+      const container = document.getElementById('otter-pet-container');
+      if (container) container.style.display = 'none';
+      showSummonButton();
+      return;
+    }
     if (result.otterState) {
       const s         = result.otterState;
       timeRemaining    = s.timeRemaining    ?? focusDuration;
