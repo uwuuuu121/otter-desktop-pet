@@ -3,34 +3,12 @@
   "name": "Otter Pet Timer",
   "version": "1.0",
   "description": "A cute otter desktop pet with Pomodoro timer",
-  "permissions": [
-    "storage"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["pet.css"]
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["images/*.png"],
-      "matches": ["<all_urls>"]
-    }
-  ]
-  {
-  "manifest_version": 3,
-  "name": "Otter Pet Timer",
-  "version": "1.0",
-  "description": "A cute otter desktop pet with Pomodoro timer",
-
+  "permissions": ["storage"],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-
   "action": {
     "default_icon": {
       "16": "icons/icon16.png",
@@ -38,11 +16,6 @@
       "128": "icons/icon128.png"
     }
   },
-
-  "permissions": [
-    "storage"
-  ],
-
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -50,12 +23,10 @@
       "css": ["pet.css"]
     }
   ],
-
   "web_accessible_resources": [
     {
       "resources": ["images/*.png"],
       "matches": ["<all_urls>"]
     }
   ]
-}
 }
