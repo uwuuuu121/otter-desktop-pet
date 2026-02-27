@@ -1,3 +1,6 @@
+[English](README.md) | [繁體中文](README_zh-TW.md)
+
+---
 # 🦦 Otter Desktop Pet – Focus Timer Chrome Extension
 
 A floating desktop otter that evolves while you focus.
