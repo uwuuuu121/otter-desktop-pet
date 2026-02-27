@@ -182,11 +182,23 @@ function showSummonButton() {
   
   const btn = document.createElement('button');
   btn.id = 'otter-summon-btn';
-  btn.textContent = '🦦';
   btn.title = '召喚水獺';
+
+  // Use current stage image
+  const img = document.createElement('img');
+  img.id = 'otter-summon-img';
+  const imgSrc = currentMode === 'sleep'    ? stages.sleep    :
+                 currentMode === 'gangster' ? stages.gangster :
+                 stages[currentStage];
+  img.src = chrome.runtime.getURL(imgSrc);
+  btn.appendChild(img);
+
   btn.addEventListener('click', () => {
     btn.remove();
-    createPet();
+    // Reset otterExists so createPet() won't block
+    chrome.storage.local.remove(['otterExists'], () => {
+      createPet();
+    });
   });
   
   document.body.appendChild(btn);
