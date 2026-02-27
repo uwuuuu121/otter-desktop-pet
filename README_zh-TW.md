@@ -1,3 +1,6 @@
+[English](README.md) | [繁體中文](README_zh-TW.md)
+
+---
 ## 🦦 水獺桌面寵物｜專注番茄鐘 Chrome 擴充功能
 
 一隻會隨著你專注而成長的小水獺。
