@@ -5,6 +5,19 @@
 
 A floating desktop otter that evolves while you focus.
 
+## 🛠 How to Install
+
+1. Download this repository as ZIP
+2. Extract the folder
+3. Open Chrome and go to: `chrome://extensions`
+4. Enable **Developer Mode** (top right)
+5. Click **Load Unpacked**
+6. Select the folder containing `manifest.json`
+
+Your otter will appear on every webpage 🦦
+
+---
+
 ## 🌊 Evolution Stages
 
 Your otter grows through focus sessions:
@@ -46,17 +59,6 @@ When the otter is hidden, a secret button appears in the bottom-right corner of 
 | Gangster | Hides otter immediately | — |
 
 The otter is **hidden**, not deleted — click the summon button to bring it back anytime.
-
-## 🛠 How to Install
-
-1. Download this repository as ZIP
-2. Extract the folder
-3. Open Chrome and go to: `chrome://extensions`
-4. Enable **Developer Mode** (top right)
-5. Click **Load Unpacked**
-6. Select the folder containing `manifest.json`
-
-Your otter will appear on every webpage 🦦
 
 ## 📁 File Structure
 
