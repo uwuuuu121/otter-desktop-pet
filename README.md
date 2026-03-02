@@ -94,3 +94,12 @@ otter-pet/
 - Stage-specific dialogue bubbles
 - Personality system
 - More evolution variations
+## 📄 Copyright
+
+© 2026 lamp_photosynthesis. All rights reserved.
+
+This project, including its code, character design, dialogue system,
+visual assets, and related materials, is the intellectual property of the author.
+
+No part of this project may be copied, modified, distributed,
+reproduced, or used for commercial purposes without explicit permission.
