@@ -136,7 +136,7 @@
   }
 }
 
-/* Summon button - magic emoji style */
+/* Summon button */
 #otter-summon-btn {
   position: fixed;
   bottom: 20px;
@@ -144,43 +144,36 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: radial-gradient(circle, #2a1a4e, #1a0a2e);
-  border: 2px solid rgba(180, 130, 255, 0.5);
-  box-shadow: 0 0 15px rgba(150, 80, 255, 0.4);
+  background: #f4a090;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
   cursor: pointer;
   z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 1px;
-  padding: 6px;
+  padding: 0;
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+#otter-summon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 #otter-summon-btn:hover {
   opacity: 1;
   transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(180, 100, 255, 0.7);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
 }
 
 #otter-summon-btn:active {
   transform: scale(0.95);
-}
-
-.otter-summon-emoji {
-  font-size: 20px;
-  display: inline-block;
-  animation: emoji-float 2s ease-in-out infinite;
-  line-height: 1;
-}
-
-@keyframes emoji-float {
-  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-  33%       { transform: translateY(-4px) rotate(10deg) scale(1.1); }
-  66%       { transform: translateY(2px) rotate(-8deg) scale(0.95); }
 }
 
 /* 右下角感應區 - 滑鼠移入才讓召喚按鈕出現 */

@@ -175,16 +175,12 @@ function showSummonButton() {
 
   const btn = document.createElement('button');
   btn.id = 'otter-summon-btn';
-  btn.title = '召喚水獺';
+  btn.title = '🔮🪄✨';
 
-  // Three magic emojis
-  ['🔮', '🪄', '✨'].forEach((emoji, i) => {
-    const span = document.createElement('span');
-    span.className = 'otter-summon-emoji';
-    span.textContent = emoji;
-    span.style.animationDelay = `${i * 0.3}s`;
-    btn.appendChild(span);
-  });
+  const img = document.createElement('img');
+  img.id = 'otter-summon-img';
+  img.src = chrome.runtime.getURL('images/summon_icon.png');
+  btn.appendChild(img);
 
   btn.addEventListener('click', () => {
     zone.remove();
