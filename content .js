@@ -167,10 +167,8 @@ function removePet() {
 
 // ── Summon Button ──────────────────────────────
 function showSummonButton() {
-  // Don't create if already exists
   if (document.getElementById('otter-summon-btn')) return;
 
-  // Invisible hover zone in bottom-right corner
   const zone = document.createElement('div');
   zone.id = 'otter-summon-zone';
   document.body.appendChild(zone);
@@ -179,11 +177,14 @@ function showSummonButton() {
   btn.id = 'otter-summon-btn';
   btn.title = '召喚水獺';
 
-  // Use custom summon icon
-  const img = document.createElement('img');
-  img.id = 'otter-summon-img';
-  img.src = chrome.runtime.getURL('images/summon_icon.png');
-  btn.appendChild(img);
+  // Three magic emojis
+  ['🔮', '🪄', '✨'].forEach((emoji, i) => {
+    const span = document.createElement('span');
+    span.className = 'otter-summon-emoji';
+    span.textContent = emoji;
+    span.style.animationDelay = `${i * 0.3}s`;
+    btn.appendChild(span);
+  });
 
   btn.addEventListener('click', () => {
     zone.remove();
