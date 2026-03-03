@@ -1,6 +1,11 @@
 [English](README.md) | [繁體中文](README_zh-TW.md)
 
 ---
+## 🚀 Installation Guide (with screenshots)
+
+- [English Installation Guide (PDF)](./docs/Otter_Manual_EN.pdf)
+- [中文安裝圖解說明 (PDF)](./docs/Otter_Manual_ZH.pdf)
+
 # 🦦 Otter Desktop Pet – Focus Timer Chrome Extension
 
 A floating desktop otter that evolves while you focus.
