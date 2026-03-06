@@ -116,23 +116,29 @@ function createPet() {
 function playDing() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+    // Bell sound = fundamental + harmonics
+    const frequencies = [987, 1975, 2963, 3951]; // bell harmonic series
+    const gains       = [0.6,  0.3,  0.15, 0.08];
 
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.6);
+    frequencies.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
 
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.8);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
-    osc.onended = () => ctx.close();
+      gain.gain.setValueAtTime(gains[i], ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.0);
+
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 2.0);
+    });
+
+    setTimeout(() => ctx.close(), 2500);
   } catch (e) {
     console.log('Audio not available:', e);
   }
@@ -364,31 +370,37 @@ function parseTimeInput(str) {
   return 0;
 }
 
-// ── Draggable (fixed: mouse stays on otter) ───
+// ── Draggable (drag from exact click point) ───
 function makeDraggable(container, ...excludedElements) {
   let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
 
   container.addEventListener('mousedown', (e) => {
     if (excludedElements.some(el => el && (e.target === el || el.contains(e.target)))) return;
-    
+
     isDragging = true;
     container.style.cursor = 'grabbing';
     document.body.style.cursor = 'grabbing';
+
+    // Record where exactly on the container the user clicked
+    const rect = container.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
     e.preventDefault();
   });
 
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    
-    const rect = container.getBoundingClientRect();
-    let newLeft = e.clientX - rect.width / 2;
-    let newTop  = e.clientY - rect.height / 2;
+
+    let newLeft = e.clientX - offsetX;
+    let newTop  = e.clientY - offsetY;
 
     // Clamp within viewport
-    const maxLeft = window.innerWidth  - rect.width;
-    const maxTop  = window.innerHeight - rect.height;
-    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-    newTop  = Math.max(0, Math.min(newTop,  maxTop));
+    const rect = container.getBoundingClientRect();
+    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth  - rect.width));
+    newTop  = Math.max(0, Math.min(newTop,  window.innerHeight - rect.height));
 
     container.style.left = newLeft + 'px';
     container.style.top  = newTop  + 'px';
