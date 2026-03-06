@@ -112,7 +112,33 @@ function createPet() {
 
 
 
-// ── Close button logic ─────────────────────────
+// ── Sound ─────────────────────────────────────
+function playDing() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.6);
+
+    gain.gain.setValueAtTime(0.5, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.8);
+
+    osc.onended = () => ctx.close();
+  } catch (e) {
+    console.log('Audio not available:', e);
+  }
+}
+
+
 function handleClose() {
   if (currentMode === 'sleep') {
     hideOtter();
@@ -219,6 +245,7 @@ function pauseTimer() {
 
 function completeTimer() {
   pauseTimer();
+  playDing();
 
   if (currentMode === 'focus') {
     // Evolve then sleep
@@ -346,6 +373,7 @@ function makeDraggable(container, ...excludedElements) {
     
     isDragging = true;
     container.style.cursor = 'grabbing';
+    document.body.style.cursor = 'grabbing';
     e.preventDefault();
   });
 
@@ -370,6 +398,7 @@ function makeDraggable(container, ...excludedElements) {
     if (isDragging) {
       isDragging = false;
       container.style.cursor = 'move';
+      document.body.style.cursor = '';
     }
   });
 }
