@@ -112,37 +112,6 @@ function createPet() {
 
 
 
-// ── Sound ─────────────────────────────────────
-function playDing() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Bell sound = fundamental + harmonics
-    const frequencies = [987, 1975, 2963, 3951]; // bell harmonic series
-    const gains       = [0.6,  0.3,  0.15, 0.08];
-
-    frequencies.forEach((freq, i) => {
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-
-      gain.gain.setValueAtTime(gains[i], ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.0);
-
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 2.0);
-    });
-
-    setTimeout(() => ctx.close(), 2500);
-  } catch (e) {
-    console.log('Audio not available:', e);
-  }
-}
 
 
 function handleClose() {
@@ -251,7 +220,6 @@ function pauseTimer() {
 
 function completeTimer() {
   pauseTimer();
-  playDing();
 
   if (currentMode === 'focus') {
     // Evolve then sleep
@@ -370,6 +338,8 @@ function parseTimeInput(str) {
   return 0;
 }
 
+let isResizingGlobal = false;
+
 // ── Draggable (drag from exact click point) ───
 function makeDraggable(container, ...excludedElements) {
   let isDragging = false;
@@ -377,14 +347,20 @@ function makeDraggable(container, ...excludedElements) {
   let offsetY = 0;
 
   container.addEventListener('mousedown', (e) => {
+    if (isResizingGlobal) return;
     if (excludedElements.some(el => el && (e.target === el || el.contains(e.target)))) return;
 
     isDragging = true;
     container.style.cursor = 'grabbing';
     document.body.style.cursor = 'grabbing';
 
-    // Record where exactly on the container the user clicked
+    // CRITICAL: clear right/bottom so left/top can take full control
     const rect = container.getBoundingClientRect();
+    container.style.right  = 'auto';
+    container.style.bottom = 'auto';
+    container.style.left   = rect.left + 'px';
+    container.style.top    = rect.top  + 'px';
+
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
 
@@ -416,33 +392,38 @@ function makeDraggable(container, ...excludedElements) {
 }
 
 // ── Resizable (fixed direction) ────────────────
-// Drag handle RIGHT/DOWN = bigger, LEFT/UP = smaller
 function makeResizable(img, handle) {
   let isResizing = false;
   let startX, startY, startSize;
 
   handle.addEventListener('mousedown', (e) => {
     isResizing = true;
-    startX     = e.clientX;
-    startY     = e.clientY;
-    startSize  = img.offsetWidth;
+    isResizingGlobal = true;
+    startX    = e.clientX;
+    startY    = e.clientY;
+    startSize = img.offsetWidth;
     e.preventDefault();
     e.stopPropagation();
   });
 
   document.addEventListener('mousemove', (e) => {
     if (!isResizing) return;
-    // Moving right OR down = bigger
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
-    const newSize = Math.max(60, Math.min(300, startSize + delta));
+    const newSize = Math.max(60, Math.min(400, startSize + delta));
     img.style.width  = newSize + 'px';
     img.style.height = newSize + 'px';
     saveState();
   });
 
-  document.addEventListener('mouseup', () => { isResizing = false; });
+  document.addEventListener('mouseup', (e) => {
+    if (isResizing) {
+      isResizing = false;
+      isResizingGlobal = false;
+      e.stopPropagation();
+    }
+  });
 }
 
 // ── Save / Load ────────────────────────────────
